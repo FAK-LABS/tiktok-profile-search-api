@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Profile Search API — Demo</title>
+<style>
+  :root {
+    --bg: #f6f4f9;
+    --surface: #ffffff;
+    --ink: #141414;
+    --muted: #6f6e78;
+    --faint: #9a99a3;
+    --line: #e3e1e8;
+    --line-strong: #c9c6d2;
+    --violet: #6c3df4;
+    --violet-dark: #5a2fd6;
+    --violet-soft: #efeaff;
+    --danger: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--violet); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  .topbar { border-bottom: 1px solid var(--line); background: var(--surface); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; padding-bottom: 14px; }
+  .brand { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); }
+  .brand span { color: var(--violet); }
+  .topbar nav a { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-left: 20px; }
+  .topbar nav a:hover { color: var(--violet); text-decoration: none; }
+  header.hero { padding: 48px 0 8px; }
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet); margin: 0 0 12px; }
+  h1 { font-size: 40px; line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 12px; font-weight: 800; }
+  .showcase { font-size: 16px; color: var(--muted); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .showcase a { color: var(--ink); font-weight: 600; }
+
+  .searchbar { display: flex; gap: 0; background: var(--surface); border: 1px solid var(--line-strong); }
+  .searchbar:focus-within { border-color: var(--violet); }
+  .searchbar input[type="text"] {
+    flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+    padding: 16px 18px; font-size: 17px; font-family: inherit; color: var(--ink);
+  }
+  .searchbar input[type="text"]::placeholder { color: var(--faint); }
+  .searchbar button {
+    border: 0; border-left: 1px solid var(--line-strong); background: var(--ink); color: #fff;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0 26px; cursor: pointer; font-family: inherit;
+  }
+  .searchbar button:hover { background: var(--violet); }
+  .hint { font-size: 13px; color: var(--muted); margin: 14px 0 0; padding-left: 2px; }
+  .hint button {
+    border: 0; background: none; padding: 0; font: inherit; color: var(--violet);
+    font-weight: 600; cursor: pointer;
+  }
+  .hint button:hover { text-decoration: underline; }
+
+  main { padding: 28px 0 8px; }
+  #status {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  }
+  #status strong { color: var(--ink); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .card.exact { border-color: var(--violet); }
+  .card-body { padding: 16px 16px 0; flex: 1; }
+  .card-head { display: flex; gap: 12px; align-items: flex-start; }
+  .card-head img { width: 64px; height: 64px; object-fit: cover; background: var(--bg); flex-shrink: 0; border-radius: 50%; }
+  .card-titles { flex: 1; min-width: 0; }
+  .card-name { font-weight: 700; font-size: 16px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .card-user { color: var(--muted); font-size: 13px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge {
+    flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--violet); background: var(--violet-soft); padding: 4px 8px;
+  }
+  .badge.verified { color: #fff; background: var(--violet); }
+  .card-stats { margin-top: 12px; font-size: 13px; color: var(--ink); }
+  .card-stats strong { font-variant-numeric: tabular-nums; }
+  .card-stats .count { color: var(--muted); }
+  .card .profile {
+    display: block; text-align: center; margin: 16px; margin-top: 14px; padding: 11px 14px;
+    background: var(--violet); color: #fff; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+  }
+  .card .profile:hover { background: var(--violet-dark); text-decoration: none; }
+
+  .skel { background: var(--surface); border: 1px solid var(--line); padding: 16px; }
+  .skel .row { display: flex; gap: 12px; }
+  .skel .sq { width: 64px; height: 64px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+  .skel .ln { height: 12px; background: var(--line); margin-bottom: 8px; }
+  .skel .ln.short { width: 55%; }
+  .skel .ln.mid { width: 80%; }
+  .skel .ln.full { width: 100%; margin-top: 14px; }
+  .skel .pulse { animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .statebox {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 48px 24px; text-align: center;
+  }
+  .statebox h2 { font-size: 20px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .statebox p { color: var(--muted); margin: 0; font-size: 14px; }
+  .statebox.error h2 { color: var(--danger); }
+
+  footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 24px 0 40px; }
+  footer .wrap { font-size: 13px; color: var(--muted); }
+  footer .fk { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+  footer code { background: var(--surface); border: 1px solid var(--line); padding: 1px 6px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">FAK LABS <span>—</span> TikTok Profile Search API</div>
+    <nav>
+      <a href="/">API</a>
+      <a href="/demo">Demo</a>
+      <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">Repo</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="kicker">FAK LABS — TikTok Profile Search API</p>
+    <h1>Find any TikTok profile.</h1>
+    <p class="showcase">Search TikTok users by username. No key. No login. This page is built with the API itself — every card below is a real result. Try <a href="#" id="try-prince">prince_faizee</a> or <a href="#" id="try-khaby">khaby.lame</a>.</p>
+    <form class="searchbar" id="search-form">
+      <input type="text" id="q" placeholder="Username — or a full TikTok profile URL" autocomplete="off" spellcheck="false">
+      <button type="submit">Search</button>
+    </form>
+    <p class="hint">Exact match is shown first. Only the fields the API returns are shown — avatar, display name, username, followers, verified status.</p>
+  </header>
+
+  <main>
+    <p id="status">Type a username to search TikTok.</p>
+    <div class="grid" id="results"></div>
+  </main>
+
+  <footer>
+    <div class="fk">FAK LABS — TikTok Profile Search API</div>
+    <p>API: <code>GET /?u=&lt;username&gt;</code> — no key, no login. Example: <code>/?u=prince_faizee</code>. Full docs in the <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">repo</a>.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById("search-form");
+  var input = document.getElementById("q");
+  var statusEl = document.getElementById("status");
+  var resultsEl = document.getElementById("results");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function fmt(n) {
+    if (n == null) return "—";
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    return String(n);
+  }
+
+  function setStatus(html) { statusEl.innerHTML = html; }
+
+  function skeleton() {
+    var html = "";
+    for (var i = 0; i < 3; i++) {
+      html += '<div class="skel"><div class="row pulse"><div class="sq"></div><div style="flex:1"><div class="ln short"></div><div class="ln mid"></div></div></div><div class="ln full pulse"></div></div>';
+    }
+    resultsEl.innerHTML = html;
+  }
+
+  function stateBox(title, text, isError) {
+    resultsEl.innerHTML =
+      '<div class="statebox' + (isError ? " error" : "") + '" style="grid-column: 1 / -1">' +
+      "<h2>" + esc(title) + "</h2><p>" + esc(text) + "</p></div>";
+  }
+
+  function card(u, isExact) {
+    var name = u.nickname || u.username;
+    var verified = u.verified ? '<span class="badge verified">Verified</span>' : "";
+    var exact = isExact ? '<span class="badge">Exact match</span>' : "";
+    var avatar = u.avatar
+      ? '<img src="' + esc(u.avatar) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility=\'hidden\'">'
+      : '<img src="" alt="" style="visibility:hidden">';
+    return (
+      '<article class="card' + (isExact ? " exact" : "") + '">' +
+      '<div class="card-body"><div class="card-head">' + avatar +
+      '<div class="card-titles"><div class="card-name">' + esc(name) + "</div>" +
+      '<div class="card-user">@' + esc(u.username) + "</div></div>" +
+      (verified || exact) +
+      '</div><div class="card-stats"><strong>' + fmt(u.followerCount) + '</strong> <span class="count">followers</span></div></div>' +
+      '<a class="profile" href="https://www.tiktok.com/@' + encodeURIComponent(u.username) + '" target="_blank" rel="noopener">View on TikTok</a>' +
+      "</article>"
+    );
+  }
+
+  function run(query) {
+    query = (query || "").trim();
+    if (!query) { input.focus(); return; }
+    setStatus("Searching TikTok for <strong>" + esc(query) + "</strong>…");
+    skeleton();
+    fetch("/?u=" + encodeURIComponent(query))
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) {
+        var data = res.body || {};
+        if (!data.success) {
+          setStatus("Search failed.");
+          stateBox("Could not search right now", data.error || ("Upstream returned HTTP " + res.status + "."), true);
+          return;
+        }
+        var users = data.users || [];
+        if (!users.length) {
+          setStatus('No profiles found for <strong>' + esc(data.query || query) + "</strong>.");
+          stateBox("No profiles found", "TikTok returned no users for that username. Check the spelling and try again.", false);
+          return;
+        }
+        var exact = data.user;
+        setStatus("<strong>" + users.length + "</strong> profile" + (users.length === 1 ? "" : "s") + " for <strong>" + esc(data.query || query) + "</strong>.");
+        var html = "";
+        if (exact) html += card(exact, true);
+        users.forEach(function (u) {
+          if (exact && u.username === exact.username) return;
+          html += card(u, false);
+        });
+        resultsEl.innerHTML = html;
+      })
+      .catch(function (err) {
+        setStatus("Search failed.");
+        stateBox("Could not reach the API", String(err && err.message ? err.message : err), true);
+      });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    run(input.value);
+  });
+
+  function tryUser(u) {
+    input.value = u;
+    run(u);
+  }
+  document.getElementById("try-prince").addEventListener("click", function (e) { e.preventDefault(); tryUser("prince_faizee"); });
+  document.getElementById("try-khaby").addEventListener("click", function (e) { e.preventDefault(); tryUser("khaby.lame"); });
+
+  var preset = new URLSearchParams(location.search).get("u");
+  if (preset) { input.value = preset; run(preset); }
+})();
+</script>
+</body>
+</html>
