@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TikTok Profile Search API — Demo</title>
+<title>TikTok Profile Search &amp; Bulk Downloader — FAK LABS</title>
 <style>
   :root {
     --bg: #f6f4f9;
@@ -171,10 +171,9 @@
 <body>
 <div class="topbar">
   <div class="wrap">
-    <div class="brand">FAK LABS <span>—</span> TikTok Profile Search API</div>
+    <div class="brand">FAK LABS <span>—</span> TikTok Profile Search &amp; Bulk Downloader</div>
     <nav>
-      <a href="/">API</a>
-      <a href="/demo">Demo</a>
+      <a href="/tool">Tool</a>
       <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">Repo</a>
     </nav>
   </div>
@@ -182,9 +181,9 @@
 
 <div class="wrap">
   <header class="hero">
-    <p class="kicker">FAK LABS — TikTok Profile Search API</p>
-    <h1>Find any TikTok profile.</h1>
-    <p class="showcase">Search TikTok users by username — or list a profile's videos with download links, in bulk. No key. No login. This page is built with the API itself — every card below is a real result. Try <a href="#" id="try-prince">prince_faizee</a> or <a href="#" id="try-khaby">khaby.lame</a>.</p>
+    <p class="kicker">FAK LABS — Free TikTok Tool</p>
+    <h1>Find any TikTok profile. Download its videos.</h1>
+    <p class="showcase">Type a username to find a TikTok profile — or pull a whole profile's videos and download them, one by one or all at once. Free, no sign-up, no app to install. Every card below is a real result. Try <a href="#" id="try-prince">prince_faizee</a> or <a href="#" id="try-khaby">khaby.lame</a>.</p>
     <div class="tabs">
       <button type="button" id="tab-search" class="active">Search profiles</button>
       <button type="button" id="tab-videos">Profile videos — bulk download</button>
@@ -196,7 +195,7 @@
       <input type="text" id="q" placeholder="Username — or a full TikTok profile URL" autocomplete="off" spellcheck="false">
       <button type="submit">Search</button>
     </form>
-    <p class="hint">Exact match is shown first. Only the fields the API returns are shown — avatar, display name, username, followers, verified status.</p>
+    <p class="hint">Exact match is shown first.</p>
 
     <main>
       <p id="status">Type a username to search TikTok.</p>
@@ -224,8 +223,8 @@
   </div>
 
   <footer>
-    <div class="fk">FAK LABS — TikTok Profile Search API</div>
-    <p>API: <code>GET /?u=&lt;username&gt;</code> — search. <code>GET /profile?u=&lt;username&gt;</code> — full profile. <code>GET /videos?u=&lt;username&gt;&amp;limit=30</code> — profile videos with download links (limit 1–90, <code>cursor</code> pages further). No key, no login. Full docs in the <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">repo</a>.</p>
+    <div class="fk">FAK LABS — TikTok Profile Search &amp; Bulk Downloader</div>
+    <p>Free tool — no key, no sign-up, no app to install. Search any TikTok profile, or download a whole profile's videos. Download links are signed and expire, so fetch a fresh link right before downloading. Developers: this tool runs on our open API — docs in the <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">repo</a>.</p>
   </footer>
 </div>
 
@@ -316,7 +315,7 @@
       })
       .catch(function (err) {
         setStatus("Search failed.");
-        stateBox("Could not reach the API", String(err && err.message ? err.message : err), true);
+        stateBox("Could not reach TikTok right now", String(err && err.message ? err.message : err), true);
       });
   }
 
@@ -476,7 +475,7 @@
         loadMoreBtn.disabled = false;
         loadMoreBtn.textContent = "Load more";
         vsetStatus("Could not load videos.");
-        if (!isMore) vresultsEl.innerHTML = '<div class="statebox error" style="grid-column: 1 / -1"><h2>Could not reach the API</h2><p>' + esc(String(err && err.message ? err.message : err)) + "</p></div>";
+        if (!isMore) vresultsEl.innerHTML = '<div class="statebox error" style="grid-column: 1 / -1"><h2>Could not reach TikTok right now</h2><p>' + esc(String(err && err.message ? err.message : err)) + "</p></div>";
       });
   }
 
