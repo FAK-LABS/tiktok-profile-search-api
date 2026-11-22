@@ -5,7 +5,7 @@ download links, in bulk. No API key needed.
 
 Live: https://tiktok-profile-api.faizankhichi.me/?u=prince_faizee
 
-Demo: https://tiktok-profile-api.faizankhichi.me/demo
+Tool: https://tiktok-profile-api.faizankhichi.me/tool
 
 ## Usage
 
@@ -103,7 +103,7 @@ exists. `users` is the full result list, `total` is the total match count.
 - Download links are signed and expire. Fetch a fresh link from `/videos`
   right before downloading, and download from the same IP.
 - A private account returns its profile with an empty `videos` list.
-- The demo page is built with the API itself. Its code is in this repo
+- The tool page is built with the API itself. Its code is in this repo
   under `example-site/` — take it, build your own.
 
 ---
