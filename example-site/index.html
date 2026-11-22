@@ -110,6 +110,58 @@
   .statebox p { color: var(--muted); margin: 0; font-size: 14px; }
   .statebox.error h2 { color: var(--danger); }
 
+  .tabs { display: flex; gap: 0; margin-top: 28px; border-bottom: 1px solid var(--line); }
+  .tabs button {
+    border: 0; background: none; padding: 10px 18px 12px; font: inherit; font-size: 12px;
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button.active { color: var(--ink); border-bottom-color: var(--violet); }
+  .tabs button:hover { color: var(--ink); }
+
+  .profile-head { background: var(--surface); border: 1px solid var(--line); padding: 20px; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+  .profile-head img { width: 80px; height: 80px; object-fit: cover; background: var(--bg); flex-shrink: 0; border-radius: 50%; }
+  .profile-head .pinfo { flex: 1; min-width: 0; }
+  .profile-head .pname { font-weight: 800; font-size: 19px; line-height: 1.3; }
+  .profile-head .puser { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .profile-head .pbio { font-size: 14px; color: var(--ink); margin-top: 8px; white-space: pre-wrap; word-break: break-word; }
+  .profile-head .pstats { margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .profile-head .pstats strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .profile-head .pstats span + span { margin-left: 14px; }
+
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .vcard { background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .vcard .cover { position: relative; display: block; background: var(--bg); aspect-ratio: 9 / 14; overflow: hidden; }
+  .vcard .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vcard .dur {
+    position: absolute; right: 8px; bottom: 8px; background: rgba(0,0,0,0.75); color: #fff;
+    font-size: 11px; font-weight: 700; padding: 3px 7px;
+  }
+  .vcard .vbody { padding: 12px 14px 0; flex: 1; }
+  .vcard .vdesc { font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 38px; }
+  .vcard .vstats { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .vcard .vstats strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .vcard .vdl {
+    display: block; text-align: center; margin: 12px 14px 14px; padding: 10px 12px;
+    background: var(--violet); color: #fff; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+  }
+  .vcard .vdl:hover { background: var(--violet-dark); text-decoration: none; }
+  .vcard .vdl.nolink { background: var(--line); color: var(--muted); pointer-events: none; }
+  .vcard .vlink { display: block; text-align: center; font-size: 12px; margin: -6px 14px 14px; }
+
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 16px; }
+  .tools button {
+    border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 10px 16px; cursor: pointer; font-family: inherit;
+  }
+  .tools button:hover { border-color: var(--violet); color: var(--violet); }
+  .tools button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tools button.primary:hover { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .tools button:disabled { opacity: 0.45; cursor: default; }
+  .note { font-size: 13px; color: var(--muted); margin: 18px 0 0; }
+
   footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 24px 0 40px; }
   footer .wrap { font-size: 13px; color: var(--muted); }
   footer .fk { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
@@ -132,22 +184,48 @@
   <header class="hero">
     <p class="kicker">FAK LABS — TikTok Profile Search API</p>
     <h1>Find any TikTok profile.</h1>
-    <p class="showcase">Search TikTok users by username. No key. No login. This page is built with the API itself — every card below is a real result. Try <a href="#" id="try-prince">prince_faizee</a> or <a href="#" id="try-khaby">khaby.lame</a>.</p>
+    <p class="showcase">Search TikTok users by username — or list a profile's videos with download links, in bulk. No key. No login. This page is built with the API itself — every card below is a real result. Try <a href="#" id="try-prince">prince_faizee</a> or <a href="#" id="try-khaby">khaby.lame</a>.</p>
+    <div class="tabs">
+      <button type="button" id="tab-search" class="active">Search profiles</button>
+      <button type="button" id="tab-videos">Profile videos — bulk download</button>
+    </div>
+  </header>
+
+  <div id="panel-search">
     <form class="searchbar" id="search-form">
       <input type="text" id="q" placeholder="Username — or a full TikTok profile URL" autocomplete="off" spellcheck="false">
       <button type="submit">Search</button>
     </form>
     <p class="hint">Exact match is shown first. Only the fields the API returns are shown — avatar, display name, username, followers, verified status.</p>
-  </header>
 
-  <main>
-    <p id="status">Type a username to search TikTok.</p>
-    <div class="grid" id="results"></div>
-  </main>
+    <main>
+      <p id="status">Type a username to search TikTok.</p>
+      <div class="grid" id="results"></div>
+    </main>
+  </div>
+
+  <div id="panel-videos" hidden>
+    <form class="searchbar" id="videos-form">
+      <input type="text" id="vq" placeholder="Username — or a full TikTok profile URL" autocomplete="off" spellcheck="false">
+      <button type="submit">Get videos</button>
+    </form>
+    <p class="hint">Lists the profile's videos with a download link on each one. Up to 90 per request — use Load more for the rest. Download links are signed and expire, so open a fresh link right before downloading.</p>
+
+    <main>
+      <p id="vstatus">Type a username to list its videos.</p>
+      <div id="vprofile"></div>
+      <div class="tools" id="vtools" hidden>
+        <button type="button" class="primary" id="copy-all">Copy all download links</button>
+        <button type="button" id="load-more">Load more</button>
+      </div>
+      <div class="vgrid" id="vresults"></div>
+      <p class="note" id="vnote" hidden>Download links are signed and expire — fetch a fresh link right before downloading.</p>
+    </main>
+  </div>
 
   <footer>
     <div class="fk">FAK LABS — TikTok Profile Search API</div>
-    <p>API: <code>GET /?u=&lt;username&gt;</code> — no key, no login. Example: <code>/?u=prince_faizee</code>. Full docs in the <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">repo</a>.</p>
+    <p>API: <code>GET /?u=&lt;username&gt;</code> — search. <code>GET /profile?u=&lt;username&gt;</code> — full profile. <code>GET /videos?u=&lt;username&gt;&amp;limit=30</code> — profile videos with download links (limit 1–90, <code>cursor</code> pages further). No key, no login. Full docs in the <a href="https://github.com/FAK-LABS/tiktok-profile-search-api" target="_blank" rel="noopener">repo</a>.</p>
   </footer>
 </div>
 
@@ -256,6 +334,175 @@
 
   var preset = new URLSearchParams(location.search).get("u");
   if (preset) { input.value = preset; run(preset); }
+
+  // ── Profile videos (bulk download) ──────────────────────────────
+  var tabSearch = document.getElementById("tab-search");
+  var tabVideos = document.getElementById("tab-videos");
+  var panelSearch = document.getElementById("panel-search");
+  var panelVideos = document.getElementById("panel-videos");
+  var vform = document.getElementById("videos-form");
+  var vinput = document.getElementById("vq");
+  var vstatusEl = document.getElementById("vstatus");
+  var vprofileEl = document.getElementById("vprofile");
+  var vtoolsEl = document.getElementById("vtools");
+  var vresultsEl = document.getElementById("vresults");
+  var vnoteEl = document.getElementById("vnote");
+  var copyAllBtn = document.getElementById("copy-all");
+  var loadMoreBtn = document.getElementById("load-more");
+
+  var vState = { query: "", cursor: null, hasMore: false, loading: false, links: [] };
+
+  function showTab(which) {
+    var isVideos = which === "videos";
+    tabSearch.classList.toggle("active", !isVideos);
+    tabVideos.classList.toggle("active", isVideos);
+    panelSearch.hidden = isVideos;
+    panelVideos.hidden = !isVideos;
+  }
+  tabSearch.addEventListener("click", function () { showTab("search"); });
+  tabVideos.addEventListener("click", function () { showTab("videos"); });
+
+  function vsetStatus(html) { vstatusEl.innerHTML = html; }
+
+  function fmtDur(s) {
+    if (s == null) return "";
+    s = Math.round(s);
+    var m = Math.floor(s / 60), r = s % 60;
+    return m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  function profileHead(u) {
+    var s = u.stats || {};
+    var avatar = u.avatar
+      ? '<img src="' + esc(u.avatar) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility=\'hidden\'">'
+      : '<img src="" alt="" style="visibility:hidden">';
+    return (
+      '<div class="profile-head">' + avatar +
+      '<div class="pinfo"><div class="pname">' + esc(u.nickname || u.username) + (u.verified ? ' <span class="badge verified">Verified</span>' : "") + "</div>" +
+      '<div class="puser">@' + esc(u.username) + "</div>" +
+      (u.bio ? '<div class="pbio">' + esc(u.bio) + "</div>" : "") +
+      '<div class="pstats"><span><strong>' + fmt(s.followers) + '</strong> followers</span>' +
+      '<span><strong>' + fmt(s.following) + '</strong> following</span>' +
+      '<span><strong>' + fmt(s.likes) + '</strong> likes</span>' +
+      '<span><strong>' + fmt(s.videos) + '</strong> videos</span></div></div></div>'
+    );
+  }
+
+  function vcard(v) {
+    var cover = v.cover
+      ? '<img src="' + esc(v.cover) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility=\'hidden\'">'
+      : "";
+    var dur = v.duration != null ? '<span class="dur">' + esc(fmtDur(v.duration)) + "</span>" : "";
+    var dl = v.downloadUrl
+      ? '<a class="vdl" href="' + esc(v.downloadUrl) + '" download target="_blank" rel="noopener">Download</a>'
+      : '<span class="vdl nolink">No download link</span>';
+    return (
+      '<article class="vcard">' +
+      '<a class="cover" href="' + esc(v.url || "#") + '" target="_blank" rel="noopener">' + cover + dur + "</a>" +
+      '<div class="vbody"><div class="vdesc">' + esc(v.desc || "") + "</div>" +
+      '<div class="vstats"><strong>' + fmt(v.stats ? v.stats.plays : null) + '</strong> plays &nbsp;·&nbsp; <strong>' + fmt(v.stats ? v.stats.likes : null) + '</strong> likes</div></div>' +
+      dl +
+      (v.url ? '<a class="vlink" href="' + esc(v.url) + '" target="_blank" rel="noopener">View on TikTok</a>' : "") +
+      "</article>"
+    );
+  }
+
+  function vskeleton() {
+    var html = "";
+    for (var i = 0; i < 6; i++) {
+      html += '<div class="skel"><div class="ln full pulse" style="height:180px;margin:0"></div><div class="ln mid pulse" style="margin-top:12px"></div></div>';
+    }
+    vresultsEl.innerHTML = html;
+  }
+
+  function runVideos(query, cursor) {
+    query = (query || "").trim();
+    if (!query || vState.loading) return;
+    vState.loading = true;
+    var isMore = !!cursor;
+    if (!isMore) {
+      vState.query = query;
+      vState.links = [];
+      vprofileEl.innerHTML = "";
+      vtoolsEl.hidden = true;
+      vnoteEl.hidden = true;
+      vresultsEl.innerHTML = "";
+      vsetStatus("Loading videos for <strong>" + esc(query) + "</strong>…");
+      vskeleton();
+    } else {
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.textContent = "Loading…";
+    }
+    var qs = "/videos?u=" + encodeURIComponent(query) + "&limit=30" + (cursor ? "&cursor=" + encodeURIComponent(cursor) : "");
+    fetch(qs)
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) {
+        vState.loading = false;
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = "Load more";
+        var data = res.body || {};
+        if (!data.success) {
+          vsetStatus("Could not load videos.");
+          if (!isMore) vresultsEl.innerHTML = '<div class="statebox error" style="grid-column: 1 / -1"><h2>Could not load videos</h2><p>' + esc(data.error || ("Upstream returned HTTP " + res.status + ".")) + "</p></div>";
+          return;
+        }
+        var vids = data.videos || [];
+        if (!isMore) {
+          vprofileEl.innerHTML = data.user ? profileHead(data.user) : "";
+          if (!vids.length) {
+            vsetStatus('No videos found for <strong>' + esc(data.query || query) + "</strong>.");
+            vresultsEl.innerHTML = '<div class="statebox" style="grid-column: 1 / -1"><h2>No videos found</h2><p>This profile has no public videos listed.</p></div>';
+            return;
+          }
+          vsetStatus("<strong>" + vids.length + "</strong> video" + (vids.length === 1 ? "" : "s") + " for <strong>" + esc(data.query || query) + "</strong>" + (data.hasMore ? " — more available below." : "."));
+          vtoolsEl.hidden = false;
+          vnoteEl.hidden = false;
+        } else {
+          vsetStatus("<strong>" + vresultsEl.children.length + "</strong> videos loaded for <strong>" + esc(data.query || query) + "</strong>.");
+        }
+        var html = "";
+        vids.forEach(function (v) {
+          if (v.downloadUrl) vState.links.push(v.downloadUrl);
+          html += vcard(v);
+        });
+        if (isMore) vresultsEl.insertAdjacentHTML("beforeend", html);
+        else vresultsEl.innerHTML = html;
+        vState.cursor = data.cursor || null;
+        vState.hasMore = !!data.hasMore;
+        loadMoreBtn.style.display = vState.hasMore ? "" : "none";
+      })
+      .catch(function (err) {
+        vState.loading = false;
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = "Load more";
+        vsetStatus("Could not load videos.");
+        if (!isMore) vresultsEl.innerHTML = '<div class="statebox error" style="grid-column: 1 / -1"><h2>Could not reach the API</h2><p>' + esc(String(err && err.message ? err.message : err)) + "</p></div>";
+      });
+  }
+
+  vform.addEventListener("submit", function (e) {
+    e.preventDefault();
+    runVideos(vinput.value, null);
+  });
+  loadMoreBtn.addEventListener("click", function () {
+    if (vState.hasMore && vState.cursor) runVideos(vState.query, vState.cursor);
+  });
+  copyAllBtn.addEventListener("click", function () {
+    var text = vState.links.join("\n");
+    if (!text) return;
+    function done() { copyAllBtn.textContent = "Copied " + vState.links.length + " links"; setTimeout(function () { copyAllBtn.textContent = "Copy all download links"; }, 2000); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  });
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
 })();
 </script>
 </body>
